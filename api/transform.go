@@ -2,11 +2,11 @@ package api
 
 import (
 	"clinic-go/db"
+	"database/sql"
 )
 
 func DbAdmin2req(admin clinicDB.Admin) Admin {
 	return Admin {
-		ID: admin.ID,
 		Username: admin.Username,
 		Name: admin.Name,
 	}
@@ -14,7 +14,6 @@ func DbAdmin2req(admin clinicDB.Admin) Admin {
 
 func DbDoctor2req(doctor clinicDB.Doctor) Doctor {
 	return Doctor {
-		ID: doctor.ID,
 		Username: doctor.Username,
 		Name: doctor.Name,
 		Sex: doctor.Sex,
@@ -25,7 +24,19 @@ func DbDoctor2req(doctor clinicDB.Doctor) Doctor {
 	}
 }
 
-func req2DbDoctorfilter(req DoctorSearchRequest) clinicDB.DoctorFilter {
+func Req2DbDoctor(doctor Doctor) clinicDB.Doctor {
+	return clinicDB.Doctor {
+		Username: doctor.Username,
+		Name: doctor.Name,
+		Sex: doctor.Sex,
+		Age: doctor.Age,
+		Department: doctor.Department,
+		Avatar: sql.NullString{String: doctor.Avatar, Valid: doctor.Avatar != ""},
+		Introduction: sql.NullString{String: doctor.Introduction, Valid: doctor.Introduction != ""},
+	}
+}
+
+func Req2DbDoctorfilter(req DoctorSearchRequest) clinicDB.DoctorFilter {
 	return clinicDB.DoctorFilter {
 		Name: req.Name,
 		Department: req.Department,

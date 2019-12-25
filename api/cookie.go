@@ -33,6 +33,7 @@ func DealwithCookie(r *http.Request) clinicDB.Account {
 	if err != nil {
 		log.Println("读取cookie失败: ", err.Error())
 	}
+	log.Println(cookie.Value)
 	ID, ok := Token2ID.Load(cookie.Value)
 	if !ok {
 		log.Println("cookie not exist: ", err.Error())

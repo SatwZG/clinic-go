@@ -49,67 +49,35 @@ func GetAccountByID(ID int) Account {
 	if item.ID == 0 {
 		log.Warn("GetAccountByID fail, it is impossible")
 	} else {
-		log.Printf("%s %s %d %d\n", item.Username, item.Password, item.ID, item.Type)
+		log.Printf("op: %s %s %d %d\n", item.Username, item.Password, item.ID, item.Type)
 	}
 	return item
 }
 
-
-
-type DoctorFilter struct {
-	Name string
-	Department string
-	Sex string
-	Age []int
-	Page int
-}
-
-const PageMax = 10
-
-func GetDoctorsByFilter(filter DoctorFilter) []Doctor {
-	var doctors []Doctor
-	DB.Table("doctors").
-		Where("department like ? AND sex = ?", "%"+filter.Department+"%", filter.Sex).
-		Where("age >= ? AND age <= ?", filter.Age[0], filter.Age[1]).
-		Limit(PageMax).
-		Offset((filter.Page-1)*PageMax).
-		Find(&doctors)
-
-	return doctors
-}
-
-func GetDoctorsCountByFilter(filter DoctorFilter) int {
-	var count int
-	DB.Table("doctors").
-		Where("department like ? AND sex = ?", "%"+filter.Department+"%", filter.Sex).
-		Where("age >= ? AND age <= ?", filter.Age[0], filter.Age[1]).
-		Count(&count)
-	return count
-}
-
-func GetDoctorByID(ID int) Doctor {
-	doctor := Doctor{ID: 0}
-	DB.Table("doctors").
-		Where("id = ?", ID).
-		First(&doctor)
-
-	if doctor.ID == 0 {
-		log.Warn("get doctor by id from DB fail")
+func AddAccount(account Account) int {
+	DB.Table("accounts").Create(&account)
+	if account.ID == 0 {
+		log.Warn("", account.ID)
 	}
-	return doctor
+	return account.ID
 }
 
-func GetDoctorsTotalPageByFilter(filter DoctorFilter) int {
-	count := GetDoctorsCountByFilter(filter)
-	if count == 0 {
-		return 1
+func UpdateAccount(username string, password string) int {
+	var account Account
+	DB.Table("accounts").
+		Where("username = ?", username).
+		First(&account)
+	if account.ID == 0 {
+		log.Warn("", account.ID)
 	}
+	account.Password = password
+	DB.Table("accounts").Save(&account)
+	return account.ID
+}
 
-	if count%PageMax == 0 {
-		return count/PageMax
-	} else {
-		return count/PageMax + 1
-	}
+func DeleteAccountByUsername(username string) {
+	DB.Where("username = ?", username).
+		Delete(Account{})
 }
 
 

@@ -20,21 +20,27 @@ func main() {
 	router.HandleFunc("/login", login).Methods("POST")
 	router.HandleFunc("/get_op_type", getOpType).Methods("POST")
 	router.HandleFunc("/search_doctors", searchDoctors).Methods("POST")
+	router.HandleFunc("/add_doctor", addDoctor).Methods("POST")
+	router.HandleFunc("/update_doctor", updateDoctor).Methods("POST")
+	router.HandleFunc("/delete_doctor", deleteDoctor).Methods("POST")
 
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
-	originsOk := handlers.AllowedOrigins([]string{"*"})
+	//originsOk := handlers.AllowedOrigins([]string{"*"})
+	originsOk := handlers.AllowedOrigins([]string{"http://localhost:8080"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT"})
+	credentialsOk := handlers.AllowCredentials()
 
-	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(headersOk, originsOk, methodsOk)(router)))
+	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(headersOk, originsOk, methodsOk, credentialsOk)(router)))
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
 	log.Println("start login")
+
 	var a api.LoginRequest
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&a)
 	if err != nil {
-		log.Printf("", err)
+		log.Warn("", err)
 		w.WriteHeader(500)
 		return
 	}
@@ -46,18 +52,25 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//cookie := http.Cookie{Name: "token", Value: "nill", Expires: expiration}
 	cookie := http.Cookie {
 		Name: "token",
 		Value: api.GetToken(),
+		Path: "/",
 		MaxAge: 300,
 	}
 	api.Token2ID.Store(cookie.Value, item.ID)
-
-
 	http.SetCookie(w, &cookie)
-	w.WriteHeader(200)
 
+	resp := api.LoginResponse {
+		Token: cookie.Value,
+	}
+	bytes, err := json.Marshal(resp)
+	_, err = w.Write(bytes)
+	if err != nil {
+		log.Printf("this is maybe fail ?")
+		w.WriteHeader(500)
+	}
+	log.Println("now response have token, after maybe no")
 }
 
 func getOpType(w http.ResponseWriter, r *http.Request) {
@@ -107,12 +120,13 @@ func searchDoctors(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&req)
 	if err != nil {
+		log.Warn("", err)
 		w.WriteHeader(500)
 		return
 	}
 
-	if len(req.Age) < 2 || req.Age[0] > req.Age[1] {
-		log.Println("illegal query")
+	if (len(req.Age) != 0 && len(req.Age) != 2) || (len(req.Age) == 2 && req.Age[0] > req.Age[1]) {
+		log.Println("age illegal query")
 		w.WriteHeader(500)
 		return
 	}
@@ -131,19 +145,13 @@ func searchDoctors(w http.ResponseWriter, r *http.Request) {
 		res.NowPage = req.Page
 	}
 
+
 	res.TotalPage = api.GetDoctorsTotalPageBySearch(req)
 
-	var doctors []api.Doctor
+	doctors := make([]api.Doctor, len(items))
 
 	for i := 0; i < len(items); i++ {
-		doctors[i].ID = items[i].ID
-		doctors[i].Username = items[i].Username
-		doctors[i].Name = items[i].Name
-		doctors[i].Department = items[i].Department
-		doctors[i].Sex = items[i].Sex
-		doctors[i].Age = items[i].Age
-		doctors[i].Introduction = items[i].Introduction.String
-		doctors[i].Avatar = items[i].Avatar.String
+		doctors[i] = api.DbDoctor2req(items[i])
 	}
 	res.Doctors = doctors
 
@@ -155,4 +163,85 @@ func searchDoctors(w http.ResponseWriter, r *http.Request) {
 		log.Printf("this is maybe fail ?")
 		w.WriteHeader(500)
 	}
+}
+
+func addDoctor(w http.ResponseWriter, r *http.Request) {
+	log.Println("start addDoctor")
+
+	account := api.DealwithCookie(r)
+	if account.Type != 2 {
+		log.Warn("cookie miss match with operator")
+		w.WriteHeader(500)
+		return
+	}
+
+	var req api.AddDoctorRequest
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&req)
+	if err != nil {
+		log.Warn("", err)
+		w.WriteHeader(500)
+		return
+	}
+
+	dbDoctor := api.Req2DbDoctor(req.Doctor)
+	ID := clinicDB.AddDoctor(dbDoctor, req.Password)
+	if ID == 0 {
+		w.WriteHeader(500)
+		return
+	}
+	w.WriteHeader(200)
+}
+
+func updateDoctor(w http.ResponseWriter, r *http.Request) {
+	log.Println("start updateDoctor")
+
+	account := api.DealwithCookie(r)
+	if account.Type != 2 {
+		log.Warn("cookie miss match with operator")
+		w.WriteHeader(500)
+		return
+	}
+
+	var req api.UpdateDoctorRequest
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&req)
+	if err != nil {
+		log.Warn("", err)
+		w.WriteHeader(500)
+		return
+	}
+
+	dbDoctor := api.Req2DbDoctor(req.Doctor)
+	ID := clinicDB.UpdateDoctor(dbDoctor, req.Password)
+	if ID == 0 {
+		w.WriteHeader(500)
+		return
+	}
+	w.WriteHeader(200)
+}
+
+func deleteDoctor(w http.ResponseWriter, r *http.Request) {
+	log.Println("start deleteDoctor")
+
+	account := api.DealwithCookie(r)
+	if account.Type != 2 {
+		log.Warn("cookie miss match with operator")
+		w.WriteHeader(500)
+		return
+	}
+
+	var req api.DeleteDoctorRequest
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&req)
+	if err != nil {
+		log.Warn("", err)
+		w.WriteHeader(500)
+		return
+	}
+
+	// i don't how get delete status, but it can delete
+	clinicDB.DeleteDoctor(req.Username)
+
+	w.WriteHeader(200)
 }

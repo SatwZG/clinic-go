@@ -6,16 +6,15 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
+	Token string `json:"token"`
 }
 
 type Admin struct {
-	ID int              `json:"id"`
 	Username string 	`json:"username"`
 	Name string 		`json:"name"`
 }
 
 type Doctor struct {
-	ID int              `json:"id"`
 	Username string 	`json:"username"`
 	Name string 		`json:"name"`
 	Sex string 			`json:"sex"`
@@ -27,7 +26,7 @@ type Doctor struct {
 
 type GetOpTypeRequest struct {
 }
-
+// status: (0, 1, 2) = (none, doctor, admin)
 type GetOpTypeResponse struct {
 	Doctor Doctor `json:"doctor"`
 	Admin Admin   `json:"admin"`
@@ -47,4 +46,26 @@ type DoctorSearchResponse struct {
 	NowPage int	 	 `json:"nowPage"`
 	TotalPage int	 `json:"totalPage"`
 	Doctors []Doctor `json:"doctors"`
+}
+
+type AddDoctorRequest struct {
+	Doctor Doctor 	`json:"doctor"`
+	Password string `json:"password"`
+}
+type AddDoctorResponse struct {
+}
+
+type UpdateDoctorRequest struct {
+	Doctor Doctor 	`json:"doctor"`
+	Password string `json:"password"`
+}
+type UpdateDoctorResponse struct {
+
+}
+
+type DeleteDoctorRequest struct {
+	Username string `json:"username"`
+}
+type DeleteDoctorResponse struct {
+
 }

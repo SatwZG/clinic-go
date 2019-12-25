@@ -3,16 +3,16 @@ package clinicDB
 import (
 	"database/sql"
 )
-
+// status: (0, 1, 2) = (none, doctor, admin)
 type Account struct {
+	ID       int    `gorm:"column:id;AUTO_INCREMENT"`
 	Username string `gorm:"column:username"`
 	Password string `gorm:"column:password"`
-	ID       int    `gorm:"column:id"`
 	Type     int    `gorm:"column:type"`
 }
 
 type Doctor struct {
-	ID 			 int    		`gorm:"column:id;AUTO_INCREMENT"`
+	ID 			 int    		`gorm:"column:id"`
 	Username 	 string 		`gorm:"column:username"`
 	Name 		 string 		`gorm:"column:name"`
 	Sex 		 string 		`gorm:"column:sex"`

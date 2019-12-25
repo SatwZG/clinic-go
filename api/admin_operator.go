@@ -7,9 +7,9 @@ import (
 
 
 func GetDoctorsBySearch(req DoctorSearchRequest) []clinicDB.Doctor {
-	return clinicDB.GetDoctorsByFilter(req2DbDoctorfilter(req))
+	return clinicDB.GetDoctorsByFilter(Req2DbDoctorfilter(req))
 }
 
 func GetDoctorsTotalPageBySearch(req DoctorSearchRequest) int {
-	return clinicDB.GetDoctorsTotalPageByFilter(req2DbDoctorfilter(req))
+	return clinicDB.GetDoctorsTotalPageByFilter(Req2DbDoctorfilter(req))
 }
