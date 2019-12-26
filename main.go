@@ -18,6 +18,7 @@ func init() {
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/login", login).Methods("POST")
+	router.HandleFunc("/logout", logout).Methods("POST")
 	router.HandleFunc("/get_op_type", getOpType).Methods("POST")
 
 	router.HandleFunc("/search_doctors", searchDoctors).Methods("POST")
@@ -25,6 +26,7 @@ func main() {
 	router.HandleFunc("/update_doctor", updateDoctor).Methods("POST")
 	router.HandleFunc("/delete_doctor", deleteDoctor).Methods("POST")
 
+	router.HandleFunc("/search_medicines_with_page", api.SearchMedicinesWithPage).Methods("POST")
 	router.HandleFunc("/search_medicine", api.SearchMedicine).Methods("POST")
 	router.HandleFunc("/add_medicine", api.AddMedicine).Methods("POST")
 	router.HandleFunc("/update_medicine", api.UpdateMedicine).Methods("POST")
@@ -83,6 +85,22 @@ func login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 	}
 	log.Println("now response have token, after maybe no")
+}
+
+func logout(w http.ResponseWriter, r *http.Request) {
+	log.Println("start logout")
+
+	account := api.DealwithCookie(r)
+	if account.Type == 0 {
+		log.Warn("getOpType fail")
+		w.WriteHeader(500)
+		return
+	}
+
+	cookie, _ := r.Cookie("token")
+	api.Token2ID.Delete(cookie.Value)
+
+	w.WriteHeader(200)
 }
 
 func getOpType(w http.ResponseWriter, r *http.Request) {

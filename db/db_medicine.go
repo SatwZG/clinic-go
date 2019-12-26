@@ -1,5 +1,37 @@
 package clinicDB
 
+func GetMedicinesByNamePage(name string, page int) []Medicine {
+	var medicines []Medicine
+	DB.Table("medicines").
+		Where("name like ?", "%"+name+"%").
+		Limit(PageMax).
+		Offset((page-1)*PageMax).
+		Find(&medicines)
+	return medicines
+}
+
+func GetMedicinesCountByName(name string) int {
+	var count int
+	DB.Table("medicines").
+		Where("name like ?", "%"+name+"%").
+		Count(&count)
+
+	return count
+}
+
+func GetMedicinesTotalPageByName(name string) int {
+	count := GetMedicinesCountByName(name)
+	if count == 0 {
+		return 1
+	}
+
+	if count%PageMax == 0 {
+		return count/PageMax
+	} else {
+		return count/PageMax + 1
+	}
+}
+
 func GetMedicinesByName(name string) []Medicine {
 	var medicines []Medicine
 	DB.Table("medicines").

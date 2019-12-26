@@ -1,12 +1,10 @@
 package api
 
 import (
-	"encoding/json"
-	"net/http"
-	"time"
-
 	clinicDB "clinic-go/db"
+	"encoding/json"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 func SearchPrescriptionsWithPage(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +56,6 @@ func SearchPrescriptionsWithPage(w http.ResponseWriter, r *http.Request) {
 		prescriptions[i] = DbPrescription2Req(items[i])
 	}
 	res.Prescriptions = prescriptions
-	res.Test = time.Now()
 
 
 	bytes, err := json.Marshal(res)

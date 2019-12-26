@@ -11,6 +11,11 @@ type LoginResponse struct {
 	Token string `json:"token"`
 }
 
+type LogoutRequest struct {
+}
+type LogoutResponse struct {
+}
+
 type Admin struct {
 	Username string 	`json:"username"`
 	Name string 		`json:"name"`
@@ -77,6 +82,17 @@ type Medicine struct {
 	Name  string `json:"name"`
 	Count int `json:"count"`
 }
+type SearchMedicineWithPageRequest struct {
+	Name string `json:"name"`
+	Page int 	`json:"page"`
+
+}
+type SearchMedicineWithPageResponse struct {
+	NowPage int	 	 `json:"nowPage"`
+	TotalPage int	 `json:"totalPage"`
+	Medicines []Medicine `json:"medicines"`
+}
+
 type SearchMedicineRequest struct {
 	Name  string `json:"name"`
 
@@ -132,7 +148,6 @@ type SearchPrescriptionsWithPageResponse struct {
 	NowPage int	 	 			 `json:"nowPage"`
 	TotalPage int	 			 `json:"totalPage"`
 	Prescriptions []Prescription `json:"prescriptions"`
-	Test time.Time               `json:"test"`
 }
 
 //type SearchPrescriptionsRequest struct {
