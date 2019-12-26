@@ -27,3 +27,9 @@ type Admin struct {
 	Username string `gorm:"column:username"`
 	Name 	 string `gorm:"column:name"`
 }
+
+type Medicine struct {
+	ID    int    `gorm:"column:id;AUTO_INCREMENT"`
+	Name  string `gorm:"column:name"`
+	Count int `gorm:"column:count"`
+}

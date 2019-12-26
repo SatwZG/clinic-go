@@ -19,10 +19,16 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/login", login).Methods("POST")
 	router.HandleFunc("/get_op_type", getOpType).Methods("POST")
+
 	router.HandleFunc("/search_doctors", searchDoctors).Methods("POST")
 	router.HandleFunc("/add_doctor", addDoctor).Methods("POST")
 	router.HandleFunc("/update_doctor", updateDoctor).Methods("POST")
 	router.HandleFunc("/delete_doctor", deleteDoctor).Methods("POST")
+
+	router.HandleFunc("/search_medicine", api.SearchMedicine).Methods("POST")
+	router.HandleFunc("/add_medicine", api.AddMedicine).Methods("POST")
+	router.HandleFunc("/update_medicine", api.UpdateMedicine).Methods("POST")
+	router.HandleFunc("/delete_medicine", api.DeleteMedicine).Methods("POST")
 
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
 	//originsOk := handlers.AllowedOrigins([]string{"*"})
@@ -56,7 +62,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		Name: "token",
 		Value: api.GetToken(),
 		Path: "/",
-		MaxAge: 300,
+		MaxAge: 3600,
 	}
 	api.Token2ID.Store(cookie.Value, item.ID)
 	http.SetCookie(w, &cookie)
@@ -131,6 +137,10 @@ func searchDoctors(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Printf("ar: %s %s %s %s %d\n", req.Name, req.Sex, req.Age, req.Department, req.Page)
+
+	if req.Page < 1 {
+		req.Page = 1
+	}
 
 	var res api.DoctorSearchResponse
 	items := api.GetDoctorsBySearch(req)

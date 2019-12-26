@@ -45,3 +45,17 @@ func Req2DbDoctorfilter(req DoctorSearchRequest) clinicDB.DoctorFilter {
 		Page: req.Page,
 	}
 }
+
+func DbMedicine2Req(medicine clinicDB.Medicine) Medicine {
+	return Medicine {
+		Name: medicine.Name,
+		Count: medicine.Count,
+	}
+}
+
+func Req2DbMedicine(medicine Medicine) clinicDB.Medicine {
+	return clinicDB.Medicine {
+		Name: medicine.Name,
+		Count: medicine.Count,
+	}
+}

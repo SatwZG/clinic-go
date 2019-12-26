@@ -14,28 +14,14 @@ type DoctorFilter struct {
 
 const PageMax = 10
 
+// 有 BUG
 func GetDoctorsByFilter(filter DoctorFilter) []Doctor {
 	var doctors []Doctor
 	if len(filter.Age) == 0 {
-		filter.Age = []int{0, 1000000}
+		filter.Age = []int{0, 1000}
 	}
-	//if len(filter.Age) != 0 {
-	//	DB.Table("doctors").
-	//		Where("name like ?", "%"+filter.Name+"%").
-	//		Where("department like ? AND sex like ?", "%"+filter.Department+"%", "%"+filter.Sex+"%").
-	//		Where("age >= ? AND age <= ?", filter.Age[0], filter.Age[1]).
-	//		Limit(PageMax).
-	//		Offset((filter.Page-1)*PageMax).
-	//		Find(&doctors)
-	//} else {
-	//	DB.Table("doctors").
-	//		Where("name like ?", "%"+filter.Name+"%").
-	//		Where("department like ? AND sex like ?", "%"+filter.Department+"%", "%"+filter.Sex+"%").
-	//		Limit(PageMax).
-	//		Offset((filter.Page-1)*PageMax).
-	//		Find(&doctors)
-	//}
 
+	log.Printf("age: %d %d", filter.Age[0], filter.Age[1])
 	DB.Table("doctors").
 		Where("name like ?", "%"+filter.Name+"%").
 		Where("department like ? AND sex like ?", "%"+filter.Department+"%", "%"+filter.Sex+"%").
@@ -43,6 +29,7 @@ func GetDoctorsByFilter(filter DoctorFilter) []Doctor {
 		Limit(PageMax).
 		Offset((filter.Page-1)*PageMax).
 		Find(&doctors)
+	log.Printf("", len(doctors))
 
 	return doctors
 }
@@ -52,18 +39,6 @@ func GetDoctorsCountByFilter(filter DoctorFilter) int {
 	if len(filter.Age) == 0 {
 		filter.Age = []int{0, 1000000}
 	}
-	//if len(filter.Age) != 0 {
-	//	DB.Table("doctors").
-	//		Where("name like ?", "%"+filter.Name+"%").
-	//		Where("department like ? AND sex like ?", "%"+filter.Department+"%", "%"+filter.Sex+"%").
-	//		Where("age >= ? AND age <= ?", filter.Age[0], filter.Age[1]).
-	//		Count(&count)
-	//} else {
-	//	DB.Table("doctors").
-	//		Where("name like ?", "%"+filter.Name+"%").
-	//		Where("department like ? AND sex like ?", "%"+filter.Department+"%", "%"+filter.Sex+"%").
-	//		Count(&count)
-	//}
 
 	DB.Table("doctors").
 		Where("name like ?", "%"+filter.Name+"%").
@@ -97,6 +72,7 @@ func GetDoctorsTotalPageByFilter(filter DoctorFilter) int {
 		return count/PageMax + 1
 	}
 }
+
 
 func AddDoctor(doctor Doctor, password string) int {
 	ID := AddAccount(Account{Username: doctor.Username, Password: password, Type: 1})

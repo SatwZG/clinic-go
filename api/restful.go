@@ -69,3 +69,37 @@ type DeleteDoctorRequest struct {
 type DeleteDoctorResponse struct {
 
 }
+
+type Medicine struct {
+	Name  string `json:"name"`
+	Count int `json:"count"`
+}
+type SearchMedicineRequest struct {
+	Name  string `json:"name"`
+
+}
+type SearchMedicineResponse struct {
+	Medicines []Medicine `json:"medicines"`
+}
+
+type AddMedicineRequest struct {
+	Medicine Medicine `json:"medicine"`
+}
+type AddMedicineResponse struct {
+
+}
+
+type DeleteMedicineRequest struct {
+	Name  string `json:"name"`
+}
+type DeleteMedicineResponse struct {
+
+}
+
+type UpdateMedicineRequest struct {
+	Medicine Medicine `json:"medicine"`
+}
+type UpdateMedicineResponse struct {
+
+}
+
