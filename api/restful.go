@@ -1,5 +1,7 @@
 package api
 
+import "time"
+
 type LoginRequest struct {
 	Username string  `json:"username"`
 	Password string `json:"password"`
@@ -70,6 +72,7 @@ type DeleteDoctorResponse struct {
 
 }
 
+// Medicine
 type Medicine struct {
 	Name  string `json:"name"`
 	Count int `json:"count"`
@@ -100,6 +103,64 @@ type UpdateMedicineRequest struct {
 	Medicine Medicine `json:"medicine"`
 }
 type UpdateMedicineResponse struct {
+
+}
+
+// Prescription
+type Prescription struct {
+	ID int               `json:"id"`
+	Department string    `json:"department"`
+	DoctorName string	 `json:"doctorName"`
+	PatientName string   `json:"patientName"`
+	Age int              `json:"age"`
+	Sex string           `json:"sex"`
+	Medicines []Medicine `json:"medicines"`
+	CreateTime time.Time `json:"createTime"`
+}
+
+type SearchPrescriptionsWithPageRequest struct {
+	Department string   `json:"department"`
+	DoctorName string	`json:"doctorName"`
+	PatientName string  `json:"patientName"`
+	Age []int           `json:"age"`
+	Sex string          `json:"sex"`
+	Time []time.Time 	`json:"time"`
+	Page int            `json:"page"`
+}
+
+type SearchPrescriptionsWithPageResponse struct {
+	NowPage int	 	 			 `json:"nowPage"`
+	TotalPage int	 			 `json:"totalPage"`
+	Prescriptions []Prescription `json:"prescriptions"`
+	Test time.Time               `json:"test"`
+}
+
+//type SearchPrescriptionsRequest struct {
+//	Name  string `json:"name"`
+//
+//}
+//type SearchPrescriptionsResponse struct {
+//	Medicines []Medicine `json:"medicines"`
+//}
+
+type AddPrescriptionRequest struct {
+	Prescription Prescription `json:"prescription"`
+}
+type AddPrescriptionResponse struct {
+
+}
+
+type DeletePrescriptionRequest struct {
+	ID int `json:"id"`
+}
+type DeletePrescriptionResponse struct {
+
+}
+
+type UpdatePrescriptionRequest struct {
+	Prescription Prescription `json:"prescription"`
+}
+type UpdatePrescriptionResponse struct {
 
 }
 

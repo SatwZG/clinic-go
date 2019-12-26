@@ -8,6 +8,14 @@ func GetMedicinesByName(name string) []Medicine {
 	return medicines
 }
 
+func GetMedicineByName(name string) Medicine {
+	var medicine Medicine
+	DB.Table("medicines").
+		Where("name like ?", name).
+		Find(&medicine)
+	return medicine
+}
+
 func AddMedicine(medicine Medicine) int {
 	DB.Table("medicines").
 		Create(&medicine)

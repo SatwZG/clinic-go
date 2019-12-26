@@ -30,6 +30,12 @@ func main() {
 	router.HandleFunc("/update_medicine", api.UpdateMedicine).Methods("POST")
 	router.HandleFunc("/delete_medicine", api.DeleteMedicine).Methods("POST")
 
+	router.HandleFunc("/search_prescriptions_with_page", api.SearchPrescriptionsWithPage).Methods("POST")
+	//router.HandleFunc("/search_prescriptions", api.SearchPrescriptions).Methods("POST")
+	router.HandleFunc("/add_prescription", api.AddPrescription).Methods("POST")
+	router.HandleFunc("/update_prescription", api.UpdatePrescription).Methods("POST")
+	router.HandleFunc("/delete_prescription", api.DeletePrescription).Methods("POST")
+
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
 	//originsOk := handlers.AllowedOrigins([]string{"*"})
 	originsOk := handlers.AllowedOrigins([]string{"http://localhost:8080"})

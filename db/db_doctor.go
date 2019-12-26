@@ -18,7 +18,7 @@ const PageMax = 10
 func GetDoctorsByFilter(filter DoctorFilter) []Doctor {
 	var doctors []Doctor
 	if len(filter.Age) == 0 {
-		filter.Age = []int{0, 1000}
+		filter.Age = []int{0, 1000000}
 	}
 
 	log.Printf("age: %d %d", filter.Age[0], filter.Age[1])

@@ -2,6 +2,7 @@ package clinicDB
 
 import (
 	"database/sql"
+	"time"
 )
 // status: (0, 1, 2) = (none, doctor, admin)
 type Account struct {
@@ -32,4 +33,17 @@ type Medicine struct {
 	ID    int    `gorm:"column:id;AUTO_INCREMENT"`
 	Name  string `gorm:"column:name"`
 	Count int `gorm:"column:count"`
+}
+
+type Prescription struct {
+	ID 	   	       int        `gorm:"column:id;AUTO_INCREMENT'"`
+	Department     string     `gorm:"column:department"`
+	DoctorUsername string     `gorm:"column:doctor_username"`
+	DoctorName     string     `gorm:"column:doctor_name"`
+	PatientID      int        `gorm:"column:patient_id"`
+	PatientName    string     `gorm:"column:patient_name"`
+	Age 	       int        `gorm:"column:age"`
+	Sex		       string     `gorm:"column:sex"`
+	Medicines      string     `gorm:"column:medicines"`
+	CreateTime     time.Time  `gorm:"column:created_at"`
 }
