@@ -75,7 +75,7 @@ func Req2DbMedicines(medicine []Medicine) []clinicDB.Medicine {
 // prescription
 func Req2DbPrescriptionFilter(req SearchPrescriptionsWithPageRequest) clinicDB.PrescriptionFilter {
 	return clinicDB.PrescriptionFilter {
-		Department: req.DoctorName,
+		Department: req.Department,
 		DoctorName: req.DoctorName,
 		PatientName: req.PatientName,
 		Age: req.Age,

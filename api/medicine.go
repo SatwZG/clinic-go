@@ -67,7 +67,7 @@ func SearchMedicine(w http.ResponseWriter, r *http.Request) {
 	log.Println("start SearchMedicine")
 
 	account := DealwithCookie(r)
-	if account.Type != 2 {
+	if account.Type == 0 {
 		log.Warn("cookie miss match with operator")
 		w.WriteHeader(500)
 		return

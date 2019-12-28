@@ -55,6 +55,7 @@ func SearchPrescriptionsWithPage(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < len(items); i++ {
 		prescriptions[i] = DbPrescription2Req(items[i])
 	}
+
 	res.Prescriptions = prescriptions
 
 
@@ -87,6 +88,14 @@ func AddPrescription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Println("AddPrescription req: ", req)
+
+	prs := req.Prescription
+
+	if len(prs.Medicines) == 0 || len(prs.Department) == 0 || len(prs.DoctorName) == 0 || len(prs.PatientName) == 0 {
+		log.Warn("prescription haven't medicines")
+		w.WriteHeader(500)
+		return
+	}
 
 
 	dbPrescription := Req2DbPrescription(req.Prescription)

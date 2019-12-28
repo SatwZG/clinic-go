@@ -98,6 +98,7 @@ func AddPrescription(prescription Prescription, medicines []Medicine) int {
 		}
 		dbMedicines[i].Count -= medicines[i].Count
 	}
+	log.Println("", dbMedicines)
 	for i := 0; i < len(dbMedicines); i++ {
 		tx.Table("medicines").
 			Save(&dbMedicines[i])
